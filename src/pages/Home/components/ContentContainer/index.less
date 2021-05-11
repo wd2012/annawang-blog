@@ -1,0 +1,27 @@
+.card-container {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  flex-wrap: wrap;
+  // overflow: auto;
+  .card-item {
+    .ant-card {
+      width: 23%;
+    }
+    width: 23%;
+    margin-right: 10px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    &:hover {
+      cursor: pointer;
+      border-color: #6859dc;
+      z-index: 1000;
+    }
+  }
+  .card-item:nth-child(4n){
+    margin-right: 0;
+  }
+  .card-item:not(:nth-child(4n)) {
+    margin-right: calc(8% / 3);
+  }
+}

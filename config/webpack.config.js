@@ -64,6 +64,10 @@ const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
+// 配置less
+const lessRegex = /\.less$/;                            // 添加文件
+const lessModuleRegex = /\.module\.less$/; 
+
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === 'true') {
     return false;
@@ -154,6 +158,30 @@ module.exports = function (webpackEnv) {
           },
         }
       );
+      let loader = {
+        loader: require.resolve(preProcessor),
+        options: {
+          sourceMap: isEnvProduction && shouldUseSourceMap,
+        },
+      }
+      if (preProcessor === "less-loader") {
+
+        // loader.options.modifyVars = {
+        //   'primary-color' : '#1DA57A',
+        //   // 'btn-primary-bg': '#FF2A8E',
+        //   // 'btn-default-bg': '#6236FF',
+        //   // 'menu-dark-bg':'linear-gradient(#64687D,#3D415A)',
+        //   // 'menu-dark-submenu-bg':'#fff',
+        // }
+        loader.options.lessOptions = {
+          modifyVars: {
+            'primary-color' : '#8A6BBE',
+            'btn-primary-bg': '#8A6BBE',
+          },
+          javascriptEnabled: true
+        }
+      }
+      loaders.push(loader);
     }
     return loaders;
   };
@@ -169,31 +197,18 @@ module.exports = function (webpackEnv) {
       : isEnvDevelopment && 'cheap-module-source-map',
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
-    entry:
-      isEnvDevelopment && !shouldUseReactRefresh
-        ? [
-            // Include an alternative client for WebpackDevServer. A client's job is to
-            // connect to WebpackDevServer by a socket and get notified about changes.
-            // When you save a file, the client will either apply hot updates (in case
-            // of CSS changes), or refresh the page (in case of JS changes). When you
-            // make a syntax error, this client will display a syntax error overlay.
-            // Note: instead of the default WebpackDevServer client, we use a custom one
-            // to bring better experience for Create React App users. You can replace
-            // the line below with these two lines if you prefer the stock client:
-            //
-            // require.resolve('webpack-dev-server/client') + '?/',
-            // require.resolve('webpack/hot/dev-server'),
-            //
-            // When using the experimental react-refresh integration,
-            // the webpack plugin takes care of injecting the dev client for us.
-            webpackDevClientEntry,
-            // Finally, this is your app's code:
-            paths.appIndexJs,
-            // We include the app code last so that if there is a runtime error during
-            // initialization, it doesn't blow up the WebpackDevServer client, and
-            // changing JS code would still trigger a refresh.
-          ]
-        : paths.appIndexJs,
+    entry:{
+      index: [
+        paths.appLoginJs,
+        isEnvDevelopment &&
+          require.resolve("react-dev-utils/webpackHotDevClient")
+      ].filter(Boolean),
+      home: [
+        paths.appIndexJs,
+        isEnvDevelopment &&
+          require.resolve("react-dev-utils/webpackHotDevClient")
+      ].filter(Boolean),
+    },
     output: {
       // The build folder.
       path: isEnvProduction ? paths.appBuild : undefined,
@@ -203,7 +218,7 @@ module.exports = function (webpackEnv) {
       // In development, it does not produce real files.
       filename: isEnvProduction
         ? 'static/js/[name].[contenthash:8].js'
-        : isEnvDevelopment && 'static/js/bundle.js',
+        : isEnvDevelopment && 'static/js/[name].bundle.js',
       // TODO: remove this when upgrading to webpack 5
       futureEmitAssets: true,
       // There are also additional JS chunk files if you use code splitting.
@@ -420,6 +435,13 @@ module.exports = function (webpackEnv) {
                       },
                     },
                   ],
+                  [
+                    require.resolve('babel-plugin-import'),
+                    {
+                      libraryName: 'antd',
+                      style: 'css'
+                    }
+                  ],
                   isEnvDevelopment &&
                     shouldUseReactRefresh &&
                     require.resolve('react-refresh/babel'),
@@ -534,6 +556,57 @@ module.exports = function (webpackEnv) {
                 'sass-loader'
               ),
             },
+                        // Opt-in support for SASS (using .scss or .sass extensions).
+            // By default we support SASS Modules with the
+            // extensions .module.scss or .module.sass
+          //   {
+          //     test: lessRegex,
+          //     exclude: lessModuleRegex,
+          //     use: getStyleLoaders(
+          //       {
+          //           importLoaders: 2,
+          //           sourceMap: isEnvProduction && shouldUseSourceMap,
+          //       },
+          //       'less-loader'
+          //     ),
+          //     sideEffects: true,
+          // },
+          // {
+          //     test: lessModuleRegex,
+          //     use: getStyleLoaders(
+          //         {
+          //             importLoaders: 2,
+          //             sourceMap: isEnvProduction && shouldUseSourceMap,
+          //             modules: true,
+          //             getLocalIdent: getCSSModuleLocalIdent,
+          //         },
+          //         'less-loader'
+          //     )
+          // },
+          {
+            test: lessRegex,
+            exclude: lessModuleRegex,
+            use: getStyleLoaders(
+              {
+                importLoaders: 2,
+                sourceMap: isEnvProduction && shouldUseSourceMap
+              },
+              'less-loader'
+            ),
+            sideEffects: true
+          },
+          {
+            test: lessModuleRegex,
+            use: getStyleLoaders(
+              {
+                importLoaders: 2,
+                sourceMap: isEnvProduction && shouldUseSourceMap,
+                modules: true,
+                getLocalIdent: getCSSModuleLocalIdent
+              },
+              'less-loader'
+            )
+          },
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.
             // In production, they would get copied to the `build` folder.
@@ -558,11 +631,65 @@ module.exports = function (webpackEnv) {
     },
     plugins: [
       // Generates an `index.html` file with the <script> injected.
+      // new HtmlWebpackPlugin(
+      //   Object.assign(
+      //     {},
+      //     {
+      //       inject: true,
+      //       template: paths.appHtml,
+      //     },
+      //     isEnvProduction
+      //       ? {
+      //           minify: {
+      //             removeComments: true,
+      //             collapseWhitespace: true,
+      //             removeRedundantAttributes: true,
+      //             useShortDoctype: true,
+      //             removeEmptyAttributes: true,
+      //             removeStyleLinkTypeAttributes: true,
+      //             keepClosingSlash: true,
+      //             minifyJS: true,
+      //             minifyCSS: true,
+      //             minifyURLs: true,
+      //           },
+      //         }
+      //       : undefined
+      //   )
+      // ),
       new HtmlWebpackPlugin(
         Object.assign(
           {},
           {
             inject: true,
+            chunks: ["index"],  // 指定入口 js 文件
+            filename: 'index.html', //配置输入文件名
+            template: paths.appHtml,
+          },
+          isEnvProduction
+            ? {
+                minify: {
+                  removeComments: true,
+                  collapseWhitespace: true,
+                  removeRedundantAttributes: true,
+                  useShortDoctype: true,
+                  removeEmptyAttributes: true,
+                  removeStyleLinkTypeAttributes: true,
+                  keepClosingSlash: true,
+                  minifyJS: true,
+                  minifyCSS: true,
+                  minifyURLs: true,
+                },
+              }
+            : undefined
+        )
+      ),
+      new HtmlWebpackPlugin(
+        Object.assign(
+          {},
+          {
+            inject: true,
+            chunks: ["home"],  // 指定入口 js 文件
+            filename: 'home.html', //配置输入文件名
             template: paths.appHtml,
           },
           isEnvProduction
@@ -647,20 +774,20 @@ module.exports = function (webpackEnv) {
       new ManifestPlugin({
         fileName: 'asset-manifest.json',
         publicPath: paths.publicUrlOrPath,
-        generate: (seed, files, entrypoints) => {
-          const manifestFiles = files.reduce((manifest, file) => {
-            manifest[file.name] = file.path;
-            return manifest;
-          }, seed);
-          const entrypointFiles = entrypoints.main.filter(
-            fileName => !fileName.endsWith('.map')
-          );
+        // generate: (seed, files, entrypoints) => {
+        //   const manifestFiles = files.reduce((manifest, file) => {
+        //     manifest[file.name] = file.path;
+        //     return manifest;
+        //   }, seed);
+        //   const entrypointFiles = entrypoints.main.filter(
+        //     fileName => !fileName.endsWith('.map')
+        //   );
 
-          return {
-            files: manifestFiles,
-            entrypoints: entrypointFiles,
-          };
-        },
+        //   return {
+        //     files: manifestFiles,
+        //     entrypoints: entrypointFiles,
+        //   };
+        // },
       }),
       // Moment.js is an extremely popular library that bundles large locale files
       // by default due to how webpack interprets its code. This is a practical

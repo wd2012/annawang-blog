@@ -2,6 +2,7 @@ import path from 'path';
 import bodyParser from 'body-parser';
 import express, { Application, NextFunction, Request, Response } from 'express';
 
+import { mountRouter } from './decorator';
 
 const app = express();
 
@@ -17,8 +18,10 @@ app.use(bodyParser.urlencoded({
   limit: `${limitSize}kb`,
 } as bodyParser.OptionsUrlencoded));
 
-app.use('/api',(req: Request, res: Response) => {
-  console.log('req', req);
-  res.json('success');
-});
+// app.use('/api/login', (req, res) => {
+//   res.send('success');
+// });
+app.use('/api', mountRouter());
+
+
 export default app;
