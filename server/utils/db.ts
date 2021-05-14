@@ -6,7 +6,7 @@ const dbConfig = {
   host: 'localhost',
   port: '3306',
   username: 'root',
-  password: 'wd398897501',
+  password: '123456',
   database: 'anna_blog',
 };
 const options = {
