@@ -3,7 +3,7 @@ import { createConnection, getConnectionManager, ConnectionOptions} from "typeor
 
 const dbConfig = {
   type: 'mysql',
-  host: '1.14.19.228',
+  host: 'localhost',
   port: '3306',
   username: 'root',
   password: '123456',
