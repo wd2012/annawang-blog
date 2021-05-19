@@ -34,7 +34,7 @@ connections.connect();
 //   logging: ['error'],
 // } as ConnectionOptions;
 
-// let connection: any; 
+let connection: any; 
 // createConnection(options).then((connection) => {
 //   console.log('**********entities', options.entities);
 //   console.log(`*******连接成功啦***************`);
