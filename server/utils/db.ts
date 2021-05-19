@@ -5,7 +5,8 @@ const dbConfig = {
   type: 'mysql',
   host: '1.14.19.228',
   port: '3306',
-  username: 'root',
+  // username: 'root',
+  username: 'anna_blog',
   password: '123456',
   database: 'anna_blog',
 };
