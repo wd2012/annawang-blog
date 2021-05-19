@@ -35,7 +35,7 @@ const Header = function(props: any) {
 
       </div>
       <div className={'header-right'}>
-        <Button onClick={gotoEditorPage} type="primary" className={'right-item'}>写文章</Button>
+        <Button size="small" onClick={gotoEditorPage} type="primary" className={'right-item'}>写文章</Button>
         <Badge className={'right-item header-icon'} count={5}>
           <NotificationOutlined />
         </Badge>

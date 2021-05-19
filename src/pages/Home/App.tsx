@@ -21,8 +21,8 @@ function App() {
   return (
     <Layout style={{ height: '100%', minWidth: '1100px' }}>
       <Header></Header>
+      <SiderBar></SiderBar>
       <div className={'main-container'}>
-        <SiderBar></SiderBar>
         <div className={'main-container-content'}>
           <Switch>
             <Redirect from="/" exact to="/home" />

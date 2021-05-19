@@ -61,13 +61,9 @@ const Siderbar = function() {
   const [ collapsed, setcCollapsed ] = useState(false);
   return (
     <div className={'sider-menu'}>
-        {/* <Button onClick={() => setcCollapsed(!collapsed)} type="primary"  style={{ marginBottom: 16 }}>
-          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined)}
-        </Button> */}
         <Menu
-          mode="inline"
-          theme="dark"
-          inlineCollapsed={collapsed}
+          mode="horizontal"
+          theme="light"
         >
           <Menu.Item key={HOME_MENU} icon={<PieChartOutlined />}>
             <Link to={PathMap.home} className="nav-link">
