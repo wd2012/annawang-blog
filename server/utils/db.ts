@@ -20,10 +20,11 @@ const options = {
     path.resolve(__dirname, '../modules/*/entity/*.model.[jt]s'),
   ],
   // synchronize: process.env.NODE_ENV === 'development' ? true : false,
-  synchronize: true,
+  synchronize: false,
   logging: ['error'],
 } as ConnectionOptions;
 
+let connection: any; 
 createConnection(options).then((connection) => {
   console.log('**********entities', options.entities);
   console.log(`*******连接成功啦***************`);
@@ -31,8 +32,10 @@ createConnection(options).then((connection) => {
 
 }).catch((e) => {
   console.log('数据库连接失败------_______', e);
+  if (e.code === 'PROTOCOL_CONNECTION_LOST') {
+    connection?.connect();
+  }
 });
 
-
-
-export default getConnectionManager().get('default');
+connection = getConnectionManager().get('default');
+export default connection;
