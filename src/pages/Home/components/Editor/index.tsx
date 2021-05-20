@@ -90,8 +90,10 @@ const EditorPage = function() {
         >草稿箱</Button>
       </div>
       <Editor
+
         ref={editorRef}
         onEditorChange={setEditorContent}
+        apiKey={'h854xi8qc9d6dlf6ef2raq1n4ycizb96ro9d6tzi1wuwz0jk'}
         init={{
           height: 600,
           menubar: false,
@@ -123,7 +125,7 @@ const EditorPage = function() {
           <div>
             {
               classifyList.map((item: string, index: number) => {
-              return <Tag onClick={() => setCurrentClassify(item)} style={{cursor: 'pointer'}} color={ColorMap[index]}>{item}</Tag>
+              return <Tag key={item} onClick={() => setCurrentClassify(item)} style={{cursor: 'pointer'}} color={ColorMap[index]}>{item}</Tag>
               })
             }
           </div>

@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Button } from 'antd';
 import {
-  AppstoreOutlined,
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  PieChartOutlined,
-  DesktopOutlined,
-  ContainerOutlined,
-  MailOutlined,
+  CustomerServiceOutlined,
+  HomeOutlined,
+  CarOutlined,
+  BugOutlined,
+  SmileOutlined,
+  GiftOutlined
 } from '@ant-design/icons';
 import 'antd/dist/antd.less';
 
@@ -65,27 +64,27 @@ const Siderbar = function() {
           mode="horizontal"
           theme="light"
         >
-          <Menu.Item key={HOME_MENU} icon={<PieChartOutlined />}>
+          <Menu.Item key={HOME_MENU} icon={<HomeOutlined />}>
             <Link to={PathMap.home} className="nav-link">
               {HOME_MENU}
             </Link>
           </Menu.Item>
-          <Menu.Item key={TEC} icon={<PieChartOutlined />}>
+          <Menu.Item key={TEC} icon={<BugOutlined />}>
             <Link to={PathMap.tec} className="nav-link">
               {TEC}
             </Link>
           </Menu.Item>
-          <Menu.Item key={TRANSLATE} icon={<PieChartOutlined />}>
+          <Menu.Item key={TRANSLATE} icon={<CustomerServiceOutlined />}>
             <Link to={PathMap.translate} className="nav-link">
               {TRANSLATE}
             </Link>
           </Menu.Item>
-          <Menu.Item key={SHARE} icon={<PieChartOutlined />}>
+          <Menu.Item key={SHARE} icon={<SmileOutlined />}>
             <Link to={PathMap.share} className="nav-link">
               {SHARE}
             </Link>
           </Menu.Item>
-          <Menu.Item key={IPPRESSION} icon={<PieChartOutlined />}>
+          <Menu.Item key={IPPRESSION} icon={<CarOutlined />}>
             <Link to={PathMap.impression} className="nav-link">
               {IPPRESSION}
             </Link>
